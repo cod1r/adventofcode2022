@@ -24,6 +24,7 @@ pub fn day1() {
             }
         }
     }
+    println!("day1");
     println!("{}", stuff[stuff.len() - 1]);
-    println!("{}", stuff[stuff.len() - 3 .. ].iter().sum::<u64>());
+    println!("{}", stuff[stuff.len() - 3..].iter().sum::<u64>());
 }
