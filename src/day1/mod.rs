@@ -17,10 +17,13 @@ pub fn day1() {
             })
         })
         .collect();
-    stuff.sort();
-    println!("1st: {}", stuff[stuff.len() - 1]);
-    println!(
-        "2nd: {}",
-        stuff[stuff.len() - 1] + stuff[stuff.len() - 2] + stuff[stuff.len() - 3]
-    );
+    for i in 1..4 {
+        for j in 0..stuff.len() - i {
+            if stuff[j] > stuff[j + 1] {
+                stuff.swap(j, j + 1);
+            }
+        }
+    }
+    println!("{}", stuff[stuff.len() - 1]);
+    println!("{}", stuff[stuff.len() - 3 .. ].iter().sum::<u64>());
 }
