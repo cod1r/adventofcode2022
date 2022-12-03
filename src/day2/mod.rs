@@ -13,7 +13,7 @@ pub fn day2() {
         &"B Z" => acc + 9,
         &"C X" => acc + 7,
         &"C Y" => acc + 2,
-        &_ => acc + 0
+        &_ => acc + 0,
     });
     let second_part = input_splt.iter().fold(0, |acc, rnd| match rnd {
         &"A X" => acc + 3,
@@ -25,7 +25,7 @@ pub fn day2() {
         &"B Z" => acc + 9,
         &"C X" => acc + 2,
         &"C Y" => acc + 6,
-        &_ => acc + 0
+        &_ => acc + 0,
     });
     println!("day2");
     println!("{}", first_part);
