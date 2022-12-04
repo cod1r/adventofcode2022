@@ -7,11 +7,11 @@ pub fn day4() {
                 ee.iter()
                     .fold(String::new(), |acc, e| acc + &(*e as char).to_string())
             })
-            .map(|s| s.parse::<u8>().unwrap());
-        let one = parts.next().unwrap();
-        let two = parts.next().unwrap();
-        let three = parts.next().unwrap();
-        let four = parts.next().unwrap();
+            .map(|s| s.parse::<u8>().expect("a number"));
+        let one = parts.next().expect("some parts are not correct");
+        let two = parts.next().expect("some parts are not correct");
+        let three = parts.next().expect("some parts are not correct");
+        let four = parts.next().expect("some parts are not correct");
         let mut first_part = acc.0;
         let mut second_part = acc.1;
         if one >= three && one <= four || three >= one && three <= two {
