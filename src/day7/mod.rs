@@ -27,7 +27,7 @@ pub fn day7() {
                     stack.pop();
                 }
             }
-        } else if first_part.as_bytes()[0] >= '0' as u8 && first_part.as_bytes()[0] <= '9' as u8 {
+        } else if first_part.chars().nth(0).unwrap().is_ascii_digit() {
             let add = first_part.parse::<usize>().unwrap();
             for key in &stack {
                 let value = hash.get(key).unwrap();
@@ -47,8 +47,7 @@ pub fn day7() {
             qualify.push(value);
         }
     }
-    qualify.sort();
-    let second = qualify.first().unwrap();
+    let second = qualify.iter().min().unwrap();
     println!("day7");
     println!("{sum}");
     println!("{second}");
