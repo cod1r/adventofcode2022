@@ -13,20 +13,14 @@ pub fn day7() {
             if second_part == "cd" {
                 let dir_name = parts.next().unwrap();
                 if dir_name != ".." {
-                    let check = String::from(dir_name.clone()) + &stack.len().to_string();
                     times += 1;
-                    if hash.contains_key(&check) {
-                        todo!()
-                    }
                     hash.insert(
                         String::from(dir_name.clone())
-                            + &stack.len().to_string()
                             + &times.to_string(),
                         0,
                     );
                     stack.push(
                         String::from(dir_name.clone())
-                            + &stack.len().to_string()
                             + &times.to_string(),
                     );
                 } else if dir_name == ".." {
@@ -43,7 +37,7 @@ pub fn day7() {
     }
     let mut sum = 0;
     let mut qualify = Vec::new();
-    let total = hash.get("/01").unwrap();
+    let total = hash.get("/1").unwrap();
     for key in hash.keys() {
         let value = hash.get(key).unwrap();
         if *value <= 100000 {
