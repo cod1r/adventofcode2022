@@ -14,16 +14,10 @@ pub fn day7() {
                 let dir_name = parts.next().unwrap();
                 if dir_name != ".." {
                     times += 1;
-                    hash.insert(
-                        String::from(dir_name.clone())
-                            + &times.to_string(),
-                        0,
-                    );
-                    stack.push(
-                        String::from(dir_name.clone())
-                            + &times.to_string(),
-                    );
-                } else if dir_name == ".." {
+                    let unique_str = String::from(dir_name) + &times.to_string();
+                    hash.insert(unique_str.clone(), 0);
+                    stack.push(unique_str.clone());
+                } else {
                     stack.pop();
                 }
             }
