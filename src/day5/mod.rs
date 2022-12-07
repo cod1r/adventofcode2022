@@ -47,6 +47,7 @@ pub fn day5() {
             stacks2[two - 1].pop();
         }
     }
+    println!("day5");
     for s in stacks {
         print!("{}", s.last().unwrap());
     }
@@ -54,4 +55,5 @@ pub fn day5() {
     for s in stacks2 {
         print!("{}", s.last().unwrap());
     }
+    println!();
 }
