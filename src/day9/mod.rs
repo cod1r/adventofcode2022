@@ -1,3 +1,4 @@
+#[inline(always)]
 fn do_movement_p2(acc: &mut [i32; 20], map: &mut [[i32; 500]; 500]) {
     for knot_idx in (0..acc.len() - 3).rev().step_by(2) {
         let (mut x1, mut y1, x2, y2): (i32, i32, i32, i32) = (
