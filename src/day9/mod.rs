@@ -1,3 +1,50 @@
+fn do_movement_p2(acc: &mut [i32; 20], map: &mut [[i32; 500]; 500]) {
+    for knot_idx in (0..acc.len() - 3).rev().step_by(2) {
+        let (mut x1, mut y1, x2, y2): (i32, i32, i32, i32) = (
+            acc[knot_idx],
+            acc[knot_idx + 1],
+            acc[knot_idx + 2],
+            acc[knot_idx + 3],
+        );
+        let dist = (x1 - x2).abs() + (y1 - y2).abs();
+        if dist >= 2 {
+            if x1 != x2 && y1 != y2 && dist == 2 {
+                continue;
+            }
+            if x1 < x2 {
+                x1 += 1;
+            } else if x1 > x2 {
+                x1 -= 1;
+            }
+
+            if y1 < y2 {
+                y1 += 1;
+            } else if y1 > y2 {
+                y1 -= 1;
+            }
+            while y1 < y2 - 1 && x1 == x2 {
+                map[acc[1] as usize][acc[0] as usize] = 1;
+                y1 += 1;
+            }
+            while y1 > y2 + 1 && x1 == x2 {
+                map[acc[1] as usize][acc[0] as usize] = 1;
+                y1 -= 1;
+            }
+            while x1 < x2 - 1 && y1 == y2 {
+                map[acc[1] as usize][acc[0] as usize] = 1;
+                x1 += 1;
+            }
+            while x1 > x2 + 1 && y1 == y2 {
+                map[acc[1] as usize][acc[0] as usize] = 1;
+                x1 -= 1;
+            }
+            map[acc[1] as usize][acc[0] as usize] = 1;
+            acc[knot_idx] = x1;
+            acc[knot_idx + 1] = y1;
+            assert!((x1 - x2).abs() + (y1 - y2).abs() <= 2);
+        }
+    }
+}
 pub fn day9() {
     let input_str = include_str!("input.txt");
     let mut map = [[0; 500]; 500];
@@ -71,202 +118,25 @@ pub fn day9() {
             "L" => {
                 for _ in 0..move_num {
                     acc[acc.len() - 2] -= 1;
-
-                    for knot_idx in (0..acc.len() - 3).rev().step_by(2) {
-                        let (mut x1, mut y1, x2, y2): (i32, i32, i32, i32) = (
-                            acc[knot_idx],
-                            acc[knot_idx + 1],
-                            acc[knot_idx + 2],
-                            acc[knot_idx + 3],
-                        );
-                        let dist = (x1 - x2).abs() + (y1 - y2).abs();
-                        if dist >= 2 {
-                            if x1 != x2 && y1 != y2 && dist == 2 {
-                                continue;
-                            }
-                            if x1 < x2 {
-                                x1 += 1;
-                            } else if x1 > x2 {
-                                x1 -= 1;
-                            }
-
-                            if y1 < y2 {
-                                y1 += 1;
-                            } else if y1 > y2 {
-                                y1 -= 1;
-                            }
-                            while y1 < y2 - 1 && x1 == x2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                y1 += 1;
-                            }
-                            while y1 > y2 + 1 && x1 == x2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                y1 -= 1;
-                            }
-                            while x1 < x2 - 1 && y1 == y2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                x1 += 1;
-                            }
-                            while x1 > x2 + 1 && y1 == y2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                x1 -= 1;
-                            }
-                            map2[acc[1] as usize][acc[0] as usize] = 1;
-                            acc[knot_idx] = x1;
-                            acc[knot_idx + 1] = y1;
-                            assert!((x1 - x2).abs() + (y1 - y2).abs() <= 2);
-                        }
-                    }
+                    do_movement_p2(&mut acc, &mut map2);
                 }
             }
             "R" => {
                 for _ in 0..move_num {
                     acc[acc.len() - 2] += 1;
-                    for knot_idx in (0..acc.len() - 3).rev().step_by(2) {
-                        let (mut x1, mut y1, x2, y2): (i32, i32, i32, i32) = (
-                            acc[knot_idx],
-                            acc[knot_idx + 1],
-                            acc[knot_idx + 2],
-                            acc[knot_idx + 3],
-                        );
-                        let dist = (x1 - x2).abs() + (y1 - y2).abs();
-                        if dist >= 2 {
-                            if x1 != x2 && y1 != y2 && dist == 2 {
-                                continue;
-                            }
-                            if x1 < x2 {
-                                x1 += 1;
-                            } else if x1 > x2 {
-                                x1 -= 1;
-                            }
-
-                            if y1 < y2 {
-                                y1 += 1;
-                            } else if y1 > y2 {
-                                y1 -= 1;
-                            }
-                            while y1 < y2 - 1 && x1 == x2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                y1 += 1;
-                            }
-                            while y1 > y2 + 1 && x1 == x2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                y1 -= 1;
-                            }
-                            while x1 < x2 - 1 && y1 == y2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                x1 += 1;
-                            }
-                            while x1 > x2 + 1 && y1 == y2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                x1 -= 1;
-                            }
-                            map2[acc[1] as usize][acc[0] as usize] = 1;
-                            acc[knot_idx] = x1;
-                            acc[knot_idx + 1] = y1;
-                            assert!((x1 - x2).abs() + (y1 - y2).abs() <= 2);
-                        }
-                    }
+                    do_movement_p2(&mut acc, &mut map2);
                 }
             }
             "U" => {
                 for _ in 0..move_num {
                     acc[acc.len() - 1] -= 1;
-                    for knot_idx in (0..acc.len() - 3).rev().step_by(2) {
-                        let (mut x1, mut y1, x2, y2): (i32, i32, i32, i32) = (
-                            acc[knot_idx],
-                            acc[knot_idx + 1],
-                            acc[knot_idx + 2],
-                            acc[knot_idx + 3],
-                        );
-                        let dist = (x1 - x2).abs() + (y1 - y2).abs();
-                        if dist >= 2 {
-                            if x1 != x2 && y1 != y2 && dist == 2 {
-                                continue;
-                            }
-                            if x1 < x2 {
-                                x1 += 1;
-                            } else if x1 > x2 {
-                                x1 -= 1;
-                            }
-
-                            if y1 < y2 {
-                                y1 += 1;
-                            } else if y1 > y2 {
-                                y1 -= 1;
-                            }
-                            while y1 < y2 - 1 && x1 == x2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                y1 += 1;
-                            }
-                            while y1 > y2 + 1 && x1 == x2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                y1 -= 1;
-                            }
-                            while x1 < x2 - 1 && y1 == y2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                x1 += 1;
-                            }
-                            while x1 > x2 + 1 && y1 == y2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                x1 -= 1;
-                            }
-                            map2[acc[1] as usize][acc[0] as usize] = 1;
-                            acc[knot_idx] = x1;
-                            acc[knot_idx + 1] = y1;
-                            assert!((x1 - x2).abs() + (y1 - y2).abs() <= 2);
-                        }
-                    }
+                    do_movement_p2(&mut acc, &mut map2);
                 }
             }
             "D" => {
                 for _ in 0..move_num {
                     acc[acc.len() - 1] += 1;
-                    for knot_idx in (0..acc.len() - 3).rev().step_by(2) {
-                        let (mut x1, mut y1, x2, y2) = (
-                            acc[knot_idx],
-                            acc[knot_idx + 1],
-                            acc[knot_idx + 2],
-                            acc[knot_idx + 3],
-                        );
-                        let dist = (x1 - x2).abs() + (y1 - y2).abs();
-                        if dist >= 2 {
-                            if x1 != x2 && y1 != y2 && dist == 2 {
-                                continue;
-                            }
-                            if x1 < x2 {
-                                x1 += 1;
-                            } else if x1 > x2 {
-                                x1 -= 1;
-                            }
-
-                            if y1 < y2 {
-                                y1 += 1;
-                            } else if y1 > y2 {
-                                y1 -= 1;
-                            }
-                            while y1 < y2 - 1 && x1 == x2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                y1 += 1;
-                            }
-                            while y1 > y2 + 1 && x1 == x2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                y1 -= 1;
-                            }
-                            while x1 < x2 - 1 && y1 == y2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                x1 += 1;
-                            }
-                            while x1 > x2 + 1 && y1 == y2 {
-                                map2[acc[1] as usize][acc[0] as usize] = 1;
-                                x1 -= 1;
-                            }
-                            map2[acc[1] as usize][acc[0] as usize] = 1;
-                            acc[knot_idx] = x1;
-                            acc[knot_idx + 1] = y1;
-                            assert!((x1 - x2).abs() + (y1 - y2).abs() <= 2);
-                        }
-                    }
+                    do_movement_p2(&mut acc, &mut map2);
                 }
             }
             _ => unreachable!(),
