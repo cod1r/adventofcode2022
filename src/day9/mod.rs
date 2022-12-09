@@ -1,5 +1,6 @@
+const MAP_SIZE: usize = 1000;
 #[inline(always)]
-fn do_movement_p2(acc: &mut [i32; 20], map: &mut [[i32; 500]; 500]) {
+fn do_movement_p2(acc: &mut [i32; 20], map: &mut [[i32; MAP_SIZE]; MAP_SIZE]) {
     for knot_idx in (0..acc.len() - 3).rev().step_by(2) {
         let (mut x1, mut y1, x2, y2): (i32, i32, i32, i32) = (
             acc[knot_idx],
@@ -48,9 +49,9 @@ fn do_movement_p2(acc: &mut [i32; 20], map: &mut [[i32; 500]; 500]) {
 }
 pub fn day9() {
     let input_str = include_str!("input.txt");
-    let mut map = [[0; 500]; 500];
-    map[249][249] = 1;
-    input_str.trim().lines().fold([249; 4], |mut acc, elem| {
+    let mut map = [[0; MAP_SIZE]; MAP_SIZE];
+    map[MAP_SIZE / 2 - 1][MAP_SIZE / 2 - 1] = 1;
+    input_str.trim().lines().fold([MAP_SIZE as i32 / 2 - 1; 4], |mut acc, elem| {
         let parts = elem.split_once(" ").unwrap();
         let move_num = parts.1.parse::<i32>().unwrap();
         match parts.0 {
@@ -110,9 +111,9 @@ pub fn day9() {
         assert!((acc[0] - acc[2]).abs() + (acc[1] - acc[3]).abs() <= 2);
         acc
     });
-    let mut map2 = [[0; 500]; 500];
-    map2[249][249] = 1;
-    input_str.trim().lines().fold([249; 20], |mut acc, elem| {
+    let mut map2 = [[0; MAP_SIZE]; MAP_SIZE];
+    map2[MAP_SIZE / 2 - 1][MAP_SIZE / 2 - 1] = 1;
+    input_str.trim().lines().fold([MAP_SIZE as i32 / 2 - 1; 20], |mut acc, elem| {
         let parts = elem.split_once(" ").unwrap();
         let move_num = parts.1.parse::<i32>().unwrap();
         match parts.0 {
