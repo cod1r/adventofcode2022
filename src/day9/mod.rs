@@ -118,29 +118,26 @@ pub fn day9() {
             "L" => {
                 for _ in 0..move_num {
                     acc[acc.len() - 2] -= 1;
-                    do_movement_p2(&mut acc, &mut map2);
                 }
             }
             "R" => {
                 for _ in 0..move_num {
                     acc[acc.len() - 2] += 1;
-                    do_movement_p2(&mut acc, &mut map2);
                 }
             }
             "U" => {
                 for _ in 0..move_num {
                     acc[acc.len() - 1] -= 1;
-                    do_movement_p2(&mut acc, &mut map2);
                 }
             }
             "D" => {
                 for _ in 0..move_num {
                     acc[acc.len() - 1] += 1;
-                    do_movement_p2(&mut acc, &mut map2);
                 }
             }
             _ => unreachable!(),
         }
+        do_movement_p2(&mut acc, &mut map2);
         acc
     });
     let part1 = map.iter().fold(0, |acc, row| {
