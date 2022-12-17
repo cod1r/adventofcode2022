@@ -76,7 +76,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             day11::day11_p1();
             day11::day11_p2();
         }
-        "12" => {}
+        "12" => {
+            day12::day12();
+        }
         _ => set_up_day(aoc_cookie.as_str(), day.as_str())?,
     }
     Ok(())
