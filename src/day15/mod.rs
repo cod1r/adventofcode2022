@@ -47,25 +47,24 @@ pub fn day15() {
                     contig.push((p.0 - diff, p.0 + diff));
                 }
             }
-            let mut one = contig.clone();
-            one.sort_by(|a, b| a.0.cmp(&b.0));
-
-            let final_one = one.iter().fold(one.first().unwrap().clone(), |acc, e| {
-                if acc.0 - 1 <= e.1 && acc.1 + 1 >= e.0 {
-                    (acc.0.min(e.0), acc.1.max(e.1))
-                } else {
-                    acc
+            contig.sort_by(|a, b| a.0.cmp(&b.0));
+            let mut final_one = contig.first().unwrap().clone();
+            for p in &contig {
+                if final_one.0 - 1 <= p.1 && final_one.1 + 1 >= p.0 {
+                    final_one.0 = final_one.0.min(p.0);
+                    final_one.1 = final_one.1.max(p.1);
                 }
-            });
+            }
             if final_one.0.max(0) != 0 || final_one.1.min(AREA) != AREA {
                 println!(
-                    "{} {rn}",
-                    if final_one.0.max(0) != 0 {
-                        final_one.0.max(0) - 1
+                    "part2: {}",
+                    AREA as usize * if final_one.0.max(0) != 0 {
+                        (final_one.0.max(0) - 1) as usize
                     } else {
-                        final_one.1.min(AREA) + 1
-                    }
+                        (final_one.1.min(AREA) + 1) as usize
+                    } + rn as usize
                 );
+                break;
             }
         }
     }
