@@ -58,11 +58,13 @@ pub fn day15() {
             if final_one.0.max(0) != 0 || final_one.1.min(AREA) != AREA {
                 println!(
                     "part2: {}",
-                    AREA as usize * if final_one.0.max(0) != 0 {
-                        (final_one.0.max(0) - 1) as usize
-                    } else {
-                        (final_one.1.min(AREA) + 1) as usize
-                    } + rn as usize
+                    AREA as usize
+                        * if final_one.0.max(0) != 0 {
+                            (final_one.0.max(0) - 1) as usize
+                        } else {
+                            (final_one.1.min(AREA) + 1) as usize
+                        }
+                        + rn as usize
                 );
                 break;
             }
