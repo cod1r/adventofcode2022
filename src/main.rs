@@ -10,6 +10,7 @@ mod day14;
 mod day15;
 mod day16;
 mod day17;
+mod day18;
 mod day2;
 mod day3;
 mod day4;
@@ -91,6 +92,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         "15" => day15::day15(),
         "16" => day16::day16(),
         "17" => day17::day17(),
+        "18" => day18::day18(),
         _ => set_up_day(aoc_cookie.as_str(), day.as_str())?,
     }
     Ok(())
