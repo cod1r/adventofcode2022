@@ -43,13 +43,14 @@ impl State {
         }
     }
 }
-fn dfs(bp: &BluePrint, state: State, minute: usize) -> usize {
-    if minute == 24 {
+// potentially a DP problem involving some N-dimensional matrix
+fn dfs<const E: usize>(bp: &BluePrint, state: State, minute: usize) -> usize {
+    if minute == E {
         return state.geode.0;
     }
     let mut ans = 0;
     if state.ore.0 >= bp.ore_cost {
-        ans = ans.max(dfs(
+        ans = ans.max(dfs::<E>(
             bp,
             State::new(
                 (state.ore.0 + state.ore.1 - bp.ore_cost, state.ore.1 + 1),
@@ -61,7 +62,7 @@ fn dfs(bp: &BluePrint, state: State, minute: usize) -> usize {
         ));
     }
     if state.ore.0 >= bp.clay_cost {
-        ans = ans.max(dfs(
+        ans = ans.max(dfs::<E>(
             bp,
             State::new(
                 (state.ore.0 + state.ore.1 - bp.clay_cost, state.ore.1),
@@ -72,10 +73,8 @@ fn dfs(bp: &BluePrint, state: State, minute: usize) -> usize {
             minute + 1,
         ));
     }
-    let mut bought = false;
     if state.ore.0 >= bp.obs_cost.0 && state.clay.0 >= bp.obs_cost.1 {
-        bought = true;
-        ans = ans.max(dfs(
+        ans = ans.max(dfs::<E>(
             bp,
             State::new(
                 (state.ore.0 + state.ore.1 - bp.obs_cost.0, state.ore.1),
@@ -87,8 +86,7 @@ fn dfs(bp: &BluePrint, state: State, minute: usize) -> usize {
         ));
     }
     if state.ore.0 >= bp.geode_cost.0 && state.obsid.0 >= bp.geode_cost.1 {
-        bought = true;
-        ans = ans.max(dfs(
+        ans = ans.max(dfs::<E>(
             bp,
             State::new(
                 (state.ore.0 + state.ore.1 - bp.geode_cost.0, state.ore.1),
@@ -102,18 +100,16 @@ fn dfs(bp: &BluePrint, state: State, minute: usize) -> usize {
             minute + 1,
         ));
     }
-    if !bought {
-        ans = ans.max(dfs(
-            bp,
-            State::new(
-                (state.ore.0 + state.ore.1, state.ore.1),
-                (state.clay.0 + state.clay.1, state.clay.1),
-                (state.obsid.0 + state.obsid.1, state.obsid.1),
-                (state.geode.0 + state.geode.1, state.geode.1),
-            ),
-            minute + 1,
-        ));
-    }
+    ans = ans.max(dfs::<E>(
+        bp,
+        State::new(
+            (state.ore.0 + state.ore.1, state.ore.1),
+            (state.clay.0 + state.clay.1, state.clay.1),
+            (state.obsid.0 + state.obsid.1, state.obsid.1),
+            (state.geode.0 + state.geode.1, state.geode.1),
+        ),
+        minute + 1,
+    ));
     ans
 }
 pub fn day19() {
@@ -136,11 +132,18 @@ pub fn day19() {
             (geode_cost1, geode_cost2),
         )
     });
-    let mut ans = 0;
+    let blueprints2 = blueprints.clone();
+    let mut part1 = 0;
     while let Some(bp) = blueprints.next() {
-        let max_geodes = dfs(&bp, State::new((0, 1), (0, 0), (0, 0), (0, 0)), 0);
-        ans += bp.id * max_geodes;
-        println!("{}", max_geodes);
+        let max_geodes = dfs::<24>(&bp, State::new((0, 1), (0, 0), (0, 0), (0, 0)), 0);
+        part1 += bp.id * max_geodes;
     }
-    println!("{}", ans);
+    println!("part1: {}", part1);
+    let mut part2 = 1;
+    let mut three = blueprints2.take(3);
+    while let Some(bp) = three.next() {
+        let max_geodes = dfs::<32>(&bp, State::new((0, 1), (0, 0), (0, 0), (0, 0)), 0);
+        part2 *= max_geodes;
+    }
+    println!("part2: {}", part2);
 }
