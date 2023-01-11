@@ -181,24 +181,26 @@ fn wrap_cube_logic(
         match second_facing {
             "R" | "L" => {
                 if second.0 + 1 == lines.len() || lines[second.0 + 1][second.1] == b' ' {
-                    let key = (second.0 + 1).to_string() + "," + &second.1.to_string();
+                    let key = (second.0 + 1).to_string() + "," + &second.1.to_string() + ",D";
                     cube_mappings.insert(key.clone(), first);
                     cube_facings.insert(curr_first.clone() + "|" + &curr_second.clone(), "U");
                 }
                 if second.0 == 0 || lines[second.0 - 1][second.1] == b' ' {
-                    let key = (second.0 as i32 - 1).to_string() + "," + &second.1.to_string();
+                    let key =
+                        (second.0 as i32 - 1).to_string() + "," + &second.1.to_string() + ",U";
                     cube_mappings.insert(key.clone(), first);
                     cube_facings.insert(curr_first.clone() + "|" + &curr_second, "D");
                 }
             }
             "U" | "D" => {
                 if second.1 + 1 == max_col || lines[second.0][second.1 + 1] == b' ' {
-                    let key = second.0.to_string() + "," + &(second.1 + 1).to_string();
+                    let key = second.0.to_string() + "," + &(second.1 + 1).to_string() + ",R";
                     cube_mappings.insert(key.clone(), first);
                     cube_facings.insert(curr_first.clone() + "|" + &curr_second.clone(), "L");
                 }
                 if second.1 == 0 || lines[second.0][second.1 - 1] == b' ' {
-                    let key = second.0.to_string() + "," + &(second.1 as i32 - 1).to_string();
+                    let key =
+                        second.0.to_string() + "," + &(second.1 as i32 - 1).to_string() + ",L";
                     cube_mappings.insert(key.clone(), first);
                     cube_facings.insert(curr_first.clone() + "|" + &curr_second, "R");
                 }
@@ -208,26 +210,26 @@ fn wrap_cube_logic(
         match first_facing {
             "R" | "L" => {
                 if first.0 + 1 == lines.len() || lines[first.0 + 1][first.1] == b' ' {
-                    let key = (first.0 + 1).to_string() + "," + &first.1.to_string();
+                    let key = (first.0 + 1).to_string() + "," + &first.1.to_string() + ",D";
                     cube_mappings.insert(key.clone(), second);
                     cube_facings.insert(curr_second.clone() + "|" + &curr_first.clone(), "U");
                 }
                 if first.0 == 0 || lines[first.0 - 1][first.1] == b' ' {
-                    let key = (first.0 as i32 - 1).to_string() + "," + &first.1.to_string();
+                    let key = (first.0 as i32 - 1).to_string() + "," + &first.1.to_string() + ",U";
                     cube_mappings.insert(key.clone(), second);
-                    cube_facings.insert(curr_second.clone() + "|" + &curr_first.clone(), "D");
+                    cube_facings.insert(curr_second + "|" + &curr_first, "D");
                 }
             }
             "U" | "D" => {
                 if first.1 + 1 == max_col || lines[first.0][first.1 + 1] == b' ' {
-                    let key = first.0.to_string() + "," + &(first.1 + 1).to_string();
+                    let key = first.0.to_string() + "," + &(first.1 + 1).to_string() + ",R";
                     cube_mappings.insert(key.clone(), second);
                     cube_facings.insert(curr_second.clone() + "|" + &curr_first.clone(), "L");
                 }
                 if first.1 == 0 || lines[first.0][first.1 - 1] == b' ' {
-                    let key = first.0.to_string() + "," + &(first.1 as i32 - 1).to_string();
+                    let key = first.0.to_string() + "," + &(first.1 as i32 - 1).to_string() + ",L";
                     cube_mappings.insert(key.clone(), second);
-                    cube_facings.insert(curr_second.clone() + "|" + &curr_first.clone(), "R");
+                    cube_facings.insert(curr_second + "|" + &curr_first, "R");
                 }
             }
             _ => unreachable!(),
@@ -276,7 +278,7 @@ fn rotate<'a>(turn: &'static str, d: &'a str) -> &'static str {
     }
 }
 pub fn day22() {
-    let input_str = include_str!("test_wrap.txt");
+    let input_str = include_str!("input.txt");
     let mut parts = input_str[..input_str.len() - 1].split("\n\n");
     assert!(input_str.chars().last().unwrap() == '\n');
     let board = parts.next().unwrap().lines();
@@ -463,7 +465,7 @@ pub fn day22() {
     turn = "R";
     let mut cube_mappings: HashMap<String, (usize, usize)> = HashMap::new();
     let mut cube_facings: HashMap<String, &'static str> = HashMap::new();
-    const FACE_SIZE: usize = 4;
+    const FACE_SIZE: usize = 50;
     for corner_row_idx in 0..lines.len() / FACE_SIZE {
         for corner_col_idx in 0..max_col / FACE_SIZE {
             let actual_row_idx = corner_row_idx * FACE_SIZE;
@@ -600,7 +602,10 @@ pub fn day22() {
                             if location2.1 > rows[location2.0].1 {
                                 let wrap_location = cube_mappings
                                     .get(
-                                        &(location2.0.to_string() + "," + &location2.1.to_string()),
+                                        &(location2.0.to_string()
+                                            + ","
+                                            + &location2.1.to_string()
+                                            + "," + turn),
                                     )
                                     .unwrap();
                                 if lines[wrap_location.0][wrap_location.1] == b'#' {
@@ -634,7 +639,10 @@ pub fn day22() {
                             } else {
                                 let wrap_location = cube_mappings
                                     .get(
-                                        &(location2.0.to_string() + "," + &location2.1.to_string()),
+                                        &(location2.0.to_string()
+                                            + ","
+                                            + &(location2.1 as i32 - 1).to_string()
+                                            + "," + turn),
                                     )
                                     .unwrap();
                                 if lines[wrap_location.0][wrap_location.1] == b'#' {
@@ -667,7 +675,10 @@ pub fn day22() {
                             } else {
                                 let wrap_location = cube_mappings
                                     .get(
-                                        &(location2.0.to_string() + "," + &location2.1.to_string()),
+                                        &((location2.0 as i32 - 1).to_string()
+                                            + ","
+                                            + &location2.1.to_string()
+                                            + "," + turn),
                                     )
                                     .unwrap();
                                 if lines[wrap_location.0][wrap_location.1] == b'#' {
@@ -698,7 +709,10 @@ pub fn day22() {
                             if location2.0 > cols[location2.1].1 {
                                 let wrap_location = cube_mappings
                                     .get(
-                                        &(location2.0.to_string() + "," + &location2.1.to_string()),
+                                        &(location2.0.to_string()
+                                            + ","
+                                            + &location2.1.to_string()
+                                            + "," + turn),
                                     )
                                     .unwrap();
                                 if lines[wrap_location.0][wrap_location.1] == b'#' {
@@ -729,7 +743,6 @@ pub fn day22() {
             }
         }
     }
-    println!("{:?} {}", location2, turn);
     println!(
         "part2: {}",
         1000 * (location2.0 + 1)
