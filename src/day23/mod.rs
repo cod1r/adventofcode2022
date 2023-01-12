@@ -192,8 +192,8 @@ pub fn day23() {
         }
     }
     let mut order = vec![Dir::North, Dir::South, Dir::West, Dir::East];
+    let mut destinations = HashMap::new();
     for rnd in 0..2000 {
-        let mut destinations = HashMap::new();
         let mut isolated = elves.len();
         for elf in &mut elves {
             if elf.check_all(&loc_to_elf) {
@@ -284,5 +284,6 @@ pub fn day23() {
         }
         let first = order.remove(0);
         order.push(first);
+        destinations.clear();
     }
 }
