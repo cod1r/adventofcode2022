@@ -1,4 +1,5 @@
-use std::collections::{HashSet, VecDeque};
+use std::collections::HashSet;
+#[derive(Clone)]
 struct Blizzard(i32, i32, u8);
 #[derive(Clone)]
 struct Spot(i32, i32, i32);
@@ -41,13 +42,18 @@ impl Spot {
 }
 fn check_and_update(
     blizzes: &HashSet<String>,
-    q: &mut VecDeque<Spot>,
+    q: &mut Vec<Spot>,
     wide: i32,
     long: i32,
-) -> i32 {
-    let old_q = q.clone();
+    done: &mut i32,
+    target: (i32, i32),
+) {
+    let mut old_q = q.clone();
     q.clear();
-    for loc in old_q {
+    for loc in &mut old_q {
+        if loc.2 + 1 > *done {
+            continue;
+        }
         let first = (loc.0 + 1).to_string() + "," + &loc.1.to_string();
         let second = (loc.0 - 1).to_string() + "," + &loc.1.to_string();
         let third = loc.0.to_string() + "," + &(loc.1 - 1).to_string();
@@ -74,23 +80,25 @@ fn check_and_update(
                 add_fifth = false;
             }
         }
-        if loc.0 + 1 == long - 1 && loc.1 == wide - 2 {
-            return loc.2 + 1;
+        if (loc.0 + 1 == target.0 && loc.1 == target.1)
+            || (loc.0 - 1 == target.0 && loc.1 == target.1)
+        {
+            *done = *done.min(&mut (loc.2 + 1));
         }
         if add_first {
-            q.push_back(Spot::new(loc.0 + 1, loc.1, loc.2 + 1));
+            q.push(Spot::new(loc.0 + 1, loc.1, loc.2 + 1));
         }
         if add_second {
-            q.push_back(Spot::new(loc.0 - 1, loc.1, loc.2 + 1));
+            q.push(Spot::new(loc.0 - 1, loc.1, loc.2 + 1));
         }
         if add_third {
-            q.push_back(Spot::new(loc.0, loc.1 - 1, loc.2 + 1));
+            q.push(Spot::new(loc.0, loc.1 - 1, loc.2 + 1));
         }
         if add_four {
-            q.push_back(Spot::new(loc.0, loc.1 + 1, loc.2 + 1));
+            q.push(Spot::new(loc.0, loc.1 + 1, loc.2 + 1));
         }
         if add_fifth {
-            q.push_back(Spot::new(loc.0, loc.1, loc.2 + 1));
+            q.push(Spot::new(loc.0, loc.1, loc.2 + 1));
         }
     }
     for i in 0..q.len() {
@@ -103,7 +111,31 @@ fn check_and_update(
             j += 1;
         }
     }
-    i32::MAX
+}
+fn calc(valley: &Vec<&[u8]>, blizz: &mut Vec<Blizzard>, you: Spot, target: (i32, i32)) -> i32 {
+    let mut q = Vec::new();
+    q.push(you);
+    let mut done = i32::MAX;
+    let mut part2 = 0;
+    let mut blizz_hashes = HashSet::new();
+    while q.len() > 0 {
+        for i in 0..blizz.len() {
+            let b = &mut blizz[i];
+            b.update(valley[0].len() as i32, valley.len() as i32);
+            blizz_hashes.insert(b.to_string());
+        }
+        check_and_update(
+            &blizz_hashes,
+            &mut q,
+            valley[0].len() as i32,
+            valley.len() as i32,
+            &mut done,
+            target,
+        );
+        blizz_hashes.clear();
+    }
+    part2 += done;
+    part2
 }
 pub fn day24() {
     let input_str = include_str!("input.txt");
@@ -113,7 +145,6 @@ pub fn day24() {
         .map(|line| line.as_bytes())
         .collect::<Vec<&[u8]>>();
     let mut blizz = Vec::new();
-    let you = Spot::new(0, 1, 0);
     for row in 0..valley.len() {
         for col in 0..valley[row].len() {
             if valley[row][col] != b'.' && valley[row][col] != b'#' {
@@ -121,26 +152,22 @@ pub fn day24() {
             }
         }
     }
-    let mut blizz_hashes = HashSet::new();
-    let mut q = VecDeque::new();
-    q.push_back(you);
-    let mut part1 = i32::MAX;
-    loop {
-        for b in &mut blizz {
-            b.update(valley[0].len() as i32, valley.len() as i32);
-            blizz_hashes.insert(b.to_string());
-        }
-        let found = check_and_update(
-            &blizz_hashes,
-            &mut q,
-            valley[0].len() as i32,
-            valley.len() as i32,
-        );
-        if found < part1 {
-            part1 = found;
-            break;
-        }
-        blizz_hashes.clear();
-    }
-    println!("{part1}");
+    let you = Spot::new(0, 1, 0);
+    let part1 = calc(
+        &valley,
+        &mut blizz,
+        you,
+        (valley.len() as i32 - 1, valley[0].len() as i32 - 2),
+    );
+    let you = Spot::new(valley.len() as i32 - 1, valley[0].len() as i32 - 2, 1);
+    let back = calc(&valley, &mut blizz, you, (0, 1));
+    let you = Spot::new(0, 1, part1 + back + 1);
+    let part2 = calc(
+        &valley,
+        &mut blizz,
+        you,
+        (valley.len() as i32 - 1, valley[0].len() as i32 - 2),
+    );
+    println!("part1: {part1}");
+    println!("part2: {part2}");
 }

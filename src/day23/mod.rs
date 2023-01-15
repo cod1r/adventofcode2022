@@ -256,7 +256,7 @@ pub fn day23() {
             }
         }
         if isolated == elves.len() {
-            println!("part2: {}" , rnd + 1);
+            println!("part2: {}", rnd + 1);
             break;
         }
         if rnd == 10 {

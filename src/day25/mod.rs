@@ -26,7 +26,7 @@ fn conv_to_snafu(mut n: i128) -> String {
                 3 => s += "=",
                 4 => s += "-",
                 5 => s += "0",
-                _ => unreachable!()
+                _ => unreachable!(),
             }
             carry = 1;
         } else {

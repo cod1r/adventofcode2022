@@ -605,7 +605,8 @@ pub fn day22() {
                                         &(location2.0.to_string()
                                             + ","
                                             + &location2.1.to_string()
-                                            + "," + turn),
+                                            + ","
+                                            + turn),
                                     )
                                     .unwrap();
                                 if lines[wrap_location.0][wrap_location.1] == b'#' {
@@ -642,7 +643,8 @@ pub fn day22() {
                                         &(location2.0.to_string()
                                             + ","
                                             + &(location2.1 as i32 - 1).to_string()
-                                            + "," + turn),
+                                            + ","
+                                            + turn),
                                     )
                                     .unwrap();
                                 if lines[wrap_location.0][wrap_location.1] == b'#' {
@@ -678,7 +680,8 @@ pub fn day22() {
                                         &((location2.0 as i32 - 1).to_string()
                                             + ","
                                             + &location2.1.to_string()
-                                            + "," + turn),
+                                            + ","
+                                            + turn),
                                     )
                                     .unwrap();
                                 if lines[wrap_location.0][wrap_location.1] == b'#' {
@@ -712,7 +715,8 @@ pub fn day22() {
                                         &(location2.0.to_string()
                                             + ","
                                             + &location2.1.to_string()
-                                            + "," + turn),
+                                            + ","
+                                            + turn),
                                     )
                                     .unwrap();
                                 if lines[wrap_location.0][wrap_location.1] == b'#' {
