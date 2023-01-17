@@ -1,20 +1,78 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
+#[derive(Clone)]
 struct Valve {
     name: &'static str,
     rate: usize,
     neighbors: Vec<&'static str>,
-    status: bool,
 }
 impl Valve {
-    fn new(name: &'static str, rate: usize, neighbors: Vec<&'static str>, status: bool) -> Valve {
+    fn new(name: &'static str, rate: usize, neighbors: Vec<&'static str>) -> Valve {
         Valve {
             name,
             rate,
             neighbors,
-            status,
         }
     }
+}
+fn find_target_valve(
+    valve_hm: &HashMap<&'static str, Valve>,
+    curr: &'static str,
+    target: &'static str,
+    visited: HashSet<&'static str>,
+    min: usize,
+) -> usize {
+    if curr == target {
+        return min;
+    }
+    let mut ans = usize::MAX;
+    for n in &valve_hm.get(curr).unwrap().neighbors {
+        if !visited.contains(n) {
+            let mut new_visited = visited.clone();
+            new_visited.insert(n);
+            ans = ans.min(find_target_valve(valve_hm, n, target, new_visited, min + 1));
+        }
+    }
+    ans
+}
+fn brute_force_every(
+    hm: &HashMap<&'static str, Valve>,
+    valves_vec: &Vec<Valve>,
+    curr_min: usize,
+    curr_v: &'static str,
+    mut openness: HashMap<&'static str, bool>,
+    minutes_to_target_hm: &HashMap<String, usize>,
+    pressure_total: usize,
+) -> usize {
+    let mut ans = pressure_total;
+    for v in 0..valves_vec.len() {
+        if valves_vec[v].name != curr_v
+            && !openness.get(valves_vec[v].name).unwrap()
+            && valves_vec[v].rate > 0
+        {
+            let minutes_to_target = minutes_to_target_hm
+                .get(&(curr_v.to_string() + valves_vec[v].name))
+                .unwrap();
+            if *minutes_to_target < usize::MAX
+                && curr_min + minutes_to_target + 1 < 30
+                && valves_vec[v].rate > 0
+            {
+                let pressure = (30 - (curr_min + minutes_to_target + 1)) * valves_vec[v].rate;
+                openness.insert(valves_vec[v].name, true);
+                ans = ans.max(brute_force_every(
+                    hm,
+                    valves_vec,
+                    curr_min + minutes_to_target + 1,
+                    valves_vec[v].name,
+                    openness.clone(),
+                    minutes_to_target_hm,
+                    pressure_total + pressure,
+                ));
+                openness.insert(valves_vec[v].name, false);
+            }
+        }
+    }
+    ans
 }
 pub fn day16() {
     let input_str = include_str!("input.txt");
@@ -33,12 +91,38 @@ pub fn day16() {
                 neighbors.push(n);
             }
         }
-        Valve::new(name, rate, neighbors, false)
+        Valve::new(name, rate, neighbors)
     });
+    let mut valves_vec = Vec::new();
+    let mut openness = HashMap::new();
     while let Some(v) = valves.next() {
-        hm.insert(v.name, v);
+        let name = v.name;
+        hm.insert(name, v.clone());
+        valves_vec.push(v);
+        openness.insert(name, false);
     }
+    openness.insert("AA", true);
+    let mut short_dist = HashMap::new();
+    for v in 0..valves_vec.len() {
+        for v2 in 0..valves_vec.len() {
+            if v != v2 {
+                short_dist.insert(
+                    valves_vec[v].name.to_string() + valves_vec[v2].name,
+                    find_target_valve(
+                        &hm,
+                        valves_vec[v].name,
+                        valves_vec[v2].name,
+                        HashSet::new(),
+                        0,
+                    ),
+                );
+            }
+        }
+    }
+    let part1 = brute_force_every(&hm, &valves_vec, 0, "AA", openness, &short_dist, 0);
+    println!("{part1}");
 }
+// FIRST THOUGHT
 // opportunity cost
 // cost of opening a valve takes 1 min which means you push every valve in the future back 1 min
 // rate: 12,open 12,13,open 13,80
@@ -60,3 +144,35 @@ pub fn day16() {
 //  which means if we factor it in, it'll pretty much just be like DFS
 //  BFS and DFS work but DFS is better since...
 // we also have to consider cycles in the graph
+//
+// SECOND THOUGHT
+// Possible brute force:
+// generate all possible 30 valve movement permutations
+// and use that to calculate the max amount of pressure possible released in 30 min
+// permutations take waaaaay too long
+//
+// THIRD THOUGHT
+// another solution is to really just DFS until you run out of time
+// too long 3 ^ 30 roughly
+//
+//
+//
+// factors:
+// minimize time takes to reach valve
+// open valves with most pressure as early as possible
+//
+//
+// FINAL THOUGHTS
+// rank each valve based on potential pressure given with the formula: (30 - (S + 1)) * R
+// where S is how many steps/minutes it took to get there and R is the pressure rate
+// then we go through each valve from highest potential pressure given...
+//
+// question is what would be S? S could be different depending on what path  you choose to take
+// make S to be the shortest possible amount of steps...
+//
+//
+// for every valve, check how many minutes it takes to get to and open every other valve (assuming
+// we take the shortest route every time)
+//
+//
+// greedy doesn't work. we need to try every other valve

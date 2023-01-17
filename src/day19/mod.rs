@@ -113,7 +113,7 @@ fn dfs<const E: usize>(bp: &BluePrint, state: State, minute: usize) -> usize {
     ans
 }
 pub fn day19() {
-    let input_str = include_str!("input.txt");
+    let input_str = include_str!("example.txt");
     let mut blueprints = input_str.trim().lines().map(|line| {
         let mut parts = line.split(' ');
         let num_colon = parts.nth(1).unwrap();
@@ -139,11 +139,11 @@ pub fn day19() {
         part1 += bp.id * max_geodes;
     }
     println!("part1: {}", part1);
-    let mut part2 = 1;
-    let mut three = blueprints2.take(3);
-    while let Some(bp) = three.next() {
-        let max_geodes = dfs::<32>(&bp, State::new((0, 1), (0, 0), (0, 0), (0, 0)), 0);
-        part2 *= max_geodes;
-    }
-    println!("part2: {}", part2);
+    //let mut part2 = 1;
+    //let mut three = blueprints2.take(3);
+    //while let Some(bp) = three.next() {
+    //    let max_geodes = dfs::<32>(&bp, State::new((0, 1), (0, 0), (0, 0), (0, 0)), 0);
+    //    part2 *= max_geodes;
+    //}
+    //println!("part2: {}", part2);
 }
