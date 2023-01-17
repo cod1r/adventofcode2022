@@ -50,10 +50,69 @@ fn brute_force_every(
             && !openness.get(valves_vec[v].name).unwrap()
             && valves_vec[v].rate > 0
         {
-            let minutes_to_target = minutes_to_target_hm
+            let minutes_to_target: usize;
+            let minutes_to_target_opt = minutes_to_target_hm
                 .get(&(curr_v.to_string() + valves_vec[v].name))
-                .unwrap();
-            if *minutes_to_target < usize::MAX
+                .is_some();
+            if !minutes_to_target_opt {
+                minutes_to_target = *minutes_to_target_hm
+                    .get(&(valves_vec[v].name.to_string() + curr_v))
+                    .unwrap();
+            } else {
+                minutes_to_target = *minutes_to_target_hm
+                    .get(&(curr_v.to_string() + valves_vec[v].name))
+                    .unwrap();
+            }
+            if minutes_to_target < usize::MAX
+                && curr_min + minutes_to_target + 1 < 30
+                && valves_vec[v].rate > 0
+            {
+                let pressure = (30 - (curr_min + minutes_to_target + 1)) * valves_vec[v].rate;
+                openness.insert(valves_vec[v].name, true);
+                ans = ans.max(brute_force_every(
+                    hm,
+                    valves_vec,
+                    curr_min + minutes_to_target + 1,
+                    valves_vec[v].name,
+                    openness.clone(),
+                    minutes_to_target_hm,
+                    pressure_total + pressure,
+                ));
+                openness.insert(valves_vec[v].name, false);
+            }
+        }
+    }
+    ans
+}
+fn brute_force_every_part2(
+    hm: &HashMap<&'static str, Valve>,
+    valves_vec: &Vec<Valve>,
+    curr_min: usize,
+    curr_v: &'static str,
+    mut openness: HashMap<&'static str, bool>,
+    minutes_to_target_hm: &HashMap<String, usize>,
+    pressure_total: usize,
+) -> usize {
+    let mut ans = pressure_total;
+    for v in 0..valves_vec.len() {
+        if valves_vec[v].name != curr_v
+            && !openness.get(valves_vec[v].name).unwrap()
+            && valves_vec[v].rate > 0
+        {
+            let minutes_to_target: usize;
+            let minutes_to_target_opt = minutes_to_target_hm
+                .get(&(curr_v.to_string() + valves_vec[v].name))
+                .is_some();
+            if !minutes_to_target_opt {
+                minutes_to_target = *minutes_to_target_hm
+                    .get(&(valves_vec[v].name.to_string() + curr_v))
+                    .unwrap();
+            } else {
+                minutes_to_target = *minutes_to_target_hm
+                    .get(&(curr_v.to_string() + valves_vec[v].name))
+                    .unwrap();
+            }
+            if minutes_to_target < usize::MAX
                 && curr_min + minutes_to_target + 1 < 30
                 && valves_vec[v].rate > 0
             {
@@ -105,7 +164,10 @@ pub fn day16() {
     let mut short_dist = HashMap::new();
     for v in 0..valves_vec.len() {
         for v2 in 0..valves_vec.len() {
-            if v != v2 {
+            if v != v2
+                && !short_dist.contains_key(&(valves_vec[v].name.to_string() + valves_vec[v2].name))
+                && !short_dist.contains_key(&(valves_vec[v2].name.to_string() + valves_vec[v].name))
+            {
                 short_dist.insert(
                     valves_vec[v].name.to_string() + valves_vec[v2].name,
                     find_target_valve(
