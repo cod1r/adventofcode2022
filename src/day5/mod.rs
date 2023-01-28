@@ -6,7 +6,7 @@ pub fn day5() {
     for idx in (0..bytes.len()).step_by(4) {
         let one = bytes[idx];
         let two = bytes[idx + 1];
-        if two == '1' as u8 {
+        if two == b'1' {
             end = idx;
             while bytes[end] != b'\n' {
                 end += 1;
@@ -15,7 +15,7 @@ pub fn day5() {
             break;
         }
         let three = bytes[idx + 2];
-        if one == '[' as u8 && two >= 'A' as u8 && two <= 'Z' as u8 && three == ']' as u8 {
+        if one == b'[' && (b'A'..=b'Z').contains(&two) && three == b']' {
             stacks[stack].push(two as char);
         }
         stack = (stack + 1) % 9;
@@ -29,9 +29,9 @@ pub fn day5() {
     }
     let string_lossy = String::from_utf8_lossy(&bytes[end..]);
     assert!(string_lossy.as_bytes()[0] != b'\n');
-    let string = string_lossy.trim().split("\n");
+    let string = string_lossy.trim().split('\n');
     for part in string {
-        let mut parts = part.split(" ");
+        let mut parts = part.split(' ');
         let one = parts.nth(1).unwrap().parse::<usize>().unwrap();
         let two = parts.nth(1).unwrap().parse::<usize>().unwrap();
         let three = parts.nth(1).unwrap().parse::<usize>().unwrap();

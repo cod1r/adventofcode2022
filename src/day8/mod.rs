@@ -2,7 +2,7 @@ pub fn day8() {
     let bytes = include_bytes!("input.txt");
     let vec = bytes[0..bytes.len() - 1]
         .split(|b| *b == b'\n')
-        .map(|ba| Vec::from(ba))
+        .map(Vec::from)
         .collect::<Vec<Vec<u8>>>();
     let mut part1: usize = 0;
     for i in 0..vec.len() {
@@ -72,6 +72,6 @@ pub fn day8() {
         }
     }
     println!("day8");
-    println!("{}", part1);
-    println!("{}", part2);
+    println!("{part1}");
+    println!("{part2}");
 }

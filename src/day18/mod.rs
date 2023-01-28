@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 fn conv_str(x: usize, y: usize, z: usize) -> String {
-    String::from(x.to_string() + "," + &y.to_string() + "," + &z.to_string())
+    x.to_string() + "," + &y.to_string() + "," + &z.to_string()
 }
 
 fn dfs(
@@ -35,12 +35,12 @@ fn dfs(
         current.1 as usize,
         current.2 as usize,
     ));
-    return dfs(bounding, hs, (current.0 - 1, current.1, current.2), visited)
+    dfs(bounding, hs, (current.0 - 1, current.1, current.2), visited)
         && dfs(bounding, hs, (current.0 + 1, current.1, current.2), visited)
         && dfs(bounding, hs, (current.0, current.1 - 1, current.2), visited)
         && dfs(bounding, hs, (current.0, current.1 + 1, current.2), visited)
         && dfs(bounding, hs, (current.0, current.1, current.2 - 1), visited)
-        && dfs(bounding, hs, (current.0, current.1, current.2 + 1), visited);
+        && dfs(bounding, hs, (current.0, current.1, current.2 + 1), visited)
 }
 
 pub fn day18() {

@@ -61,7 +61,7 @@ fn find_humn(
     }
     let first = find_humn(left, hm, op_second);
     let second = find_humn(right, hm, op_first);
-    if first.len() > 0 {
+    if !first.is_empty() {
         first
     } else {
         second
@@ -89,7 +89,7 @@ pub fn day21() {
     let mut second = dfs(right, &hm, &mut second_ans);
     if first_ans.contains_key("humn") {
         let ops = find_humn(left, &hm, Vec::new());
-        assert!(ops.len() > 0);
+        assert!(!ops.is_empty());
         for op in ops {
             match op.0 {
                 "+" => {
@@ -124,7 +124,7 @@ pub fn day21() {
         println!("part2: {second}");
     } else if second_ans.contains_key("humn") {
         let ops = find_humn(right, &hm, Vec::new());
-        assert!(ops.len() > 0);
+        assert!(!ops.is_empty());
         for op in ops {
             match op.0 {
                 "+" => {

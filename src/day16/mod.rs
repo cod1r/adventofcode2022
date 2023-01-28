@@ -40,9 +40,8 @@ fn get_mins_to_target(
     curr: &'static str,
     target: &'static str,
 ) -> usize {
-    if !mins_to_target_hm
-        .get(&(curr.to_string() + target))
-        .is_some()
+    if mins_to_target_hm
+        .get(&(curr.to_string() + target)).is_none()
     {
         *mins_to_target_hm.get(&(target.to_string() + curr)).unwrap()
     } else {
@@ -153,14 +152,14 @@ fn brute_force_every_part2(
 pub fn day16() {
     let input_str = include_str!("input.txt");
     let mut hm = HashMap::new();
-    let mut valves = input_str.trim().lines().map(|line| {
+    let valves = input_str.trim().lines().map(|line| {
         let mut parts = line.split(' ');
         let name = parts.nth(1).unwrap();
         let rate_str = parts.nth(2).unwrap();
         let rate = rate_str[5..rate_str.len() - 1].parse::<usize>().unwrap();
         let mut neighbors = Vec::new();
         parts.nth(3).unwrap();
-        while let Some(n) = parts.next() {
+        for n in parts {
             if n.contains(',') {
                 neighbors.push(&n[..n.len() - 1]);
             } else {
@@ -171,7 +170,7 @@ pub fn day16() {
     });
     let mut valves_vec = Vec::new();
     let mut openness = HashMap::new();
-    while let Some(v) = valves.next() {
+    for v in valves {
         let name = v.name;
         hm.insert(name, v.clone());
         valves_vec.push(v);
@@ -200,8 +199,7 @@ pub fn day16() {
     }
     valves_vec = valves_vec
         .iter()
-        .filter(|v| v.rate > 0)
-        .map(|v| v.clone())
+        .filter(|v| v.rate > 0).cloned()
         .collect::<Vec<_>>();
     let start = std::time::Instant::now();
     let part1 = brute_force_every(&hm, &valves_vec, 0, "AA", &mut openness, &short_dist, 0);

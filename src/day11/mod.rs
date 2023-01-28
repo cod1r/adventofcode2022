@@ -37,8 +37,7 @@ fn parse_input() -> Vec<Monkey> {
             .split_once(' ')
             .unwrap()
             .1
-            .chars()
-            .nth(0)
+            .chars().next()
             .unwrap()
             .to_digit(10)
             .unwrap();
@@ -52,7 +51,7 @@ fn parse_input() -> Vec<Monkey> {
             .1
             .split(' ')
             .for_each(|item| {
-                if item.len() > 0 {
+                if !item.is_empty() {
                     if item.contains(',') {
                         monkey.items.push(NWrap {
                             num: item[0..item.len() - 1].parse::<u128>().unwrap(),
@@ -105,13 +104,13 @@ pub fn day11_p1() {
             for idx in 0..m_copy.items.len() {
                 let last = m_copy.operation.split(' ').last().unwrap();
                 if m_copy.operation.contains('*') {
-                    if last.chars().nth(0).unwrap().is_numeric() {
+                    if last.chars().next().unwrap().is_numeric() {
                         m_copy.items[idx].num *= last.parse::<u128>().unwrap();
                     } else {
                         m_copy.items[idx].num *= m_copy.items[idx].num;
                     }
                 } else if m_copy.operation.contains('+') {
-                    if last.chars().nth(0).unwrap().is_numeric() {
+                    if last.chars().next().unwrap().is_numeric() {
                         m_copy.items[idx].num += last.parse::<u128>().unwrap();
                     } else {
                         m_copy.items[idx].num += m_copy.items[idx].num;
@@ -143,18 +142,18 @@ pub fn day11_p2() {
         for monkey_idx in 0..monkeys2.len() {
             let mut m_copy = monkeys2[monkey_idx].clone();
             m_copy.items.reverse();
-            while m_copy.items.len() > 0 {
+            while !m_copy.items.is_empty() {
                 let mut item = m_copy.items.pop().unwrap();
                 monkeys2[monkey_idx].inspected += 1;
                 let last = m_copy.operation.split(' ').last().unwrap();
                 if m_copy.operation.contains('*') {
-                    if last.chars().nth(0).unwrap().is_numeric() {
+                    if last.chars().next().unwrap().is_numeric() {
                         item.num *= last.parse::<u128>().unwrap();
                     } else {
                         item.num *= item.num;
                     }
                 } else if m_copy.operation.contains('+') {
-                    if last.chars().nth(0).unwrap().is_numeric() {
+                    if last.chars().next().unwrap().is_numeric() {
                         item.num += last.parse::<u128>().unwrap();
                     } else {
                         item.num += item.num;

@@ -4,10 +4,10 @@ pub fn day10() {
     let part1 = input_str
         .trim()
         .lines()
-        .fold((1 as i32, 0 as usize, 0 as usize), |acc, line| {
+        .fold((1_i32, 0_usize, 0_usize), |acc, line| {
             let (mut x, mut cycle, mut sig_str) = acc;
-            let mut parts = line.split(" ");
-            match parts.nth(0).unwrap() {
+            let mut parts = line.split(' ');
+            match parts.next().unwrap() {
                 "addx" => {
                     cycle += 1;
                     if cycle == 20
@@ -41,7 +41,7 @@ pub fn day10() {
                     } else {
                         crt[(cycle - 1) / 40][(cycle - 1) % 40] = 0;
                     }
-                    x += parts.nth(0).unwrap().parse::<i32>().unwrap();
+                    x += parts.next().unwrap().parse::<i32>().unwrap();
                 }
                 "noop" => {
                     cycle += 1;

@@ -105,7 +105,7 @@ fn dfs<const E: u32>(bp: &BluePrint, node: Node, stage: u8, minute: u32) -> u32 
     ans = ans.max(dfs::<E>(bp, node2, stage, minute + 1));
     match stage {
         1 => {
-            let mut node3 = node.clone();
+            let mut node3 = node;
             node3.update();
             let or = match node3.ore {
                 RType::Ore(or) => or,
@@ -147,7 +147,7 @@ fn dfs<const E: u32>(bp: &BluePrint, node: Node, stage: u8, minute: u32) -> u32 
             }
         }
         2 => {
-            let mut node3 = node.clone();
+            let mut node3 = node;
             node3.update();
             match &node3.ore {
                 RType::Ore(or) => match &node3.clay {
@@ -178,7 +178,7 @@ fn dfs<const E: u32>(bp: &BluePrint, node: Node, stage: u8, minute: u32) -> u32 
             }
         }
         3 => {
-            let mut node3 = node.clone();
+            let mut node3 = node;
             node3.update();
             let or = match &node3.ore {
                 RType::Ore(or) => or,
@@ -221,7 +221,7 @@ fn dfs<const E: u32>(bp: &BluePrint, node: Node, stage: u8, minute: u32) -> u32 
 }
 pub fn day19() {
     let input_str = include_str!("example.txt");
-    let mut blueprints = input_str.trim().lines().map(|line| {
+    let blueprints = input_str.trim().lines().map(|line| {
         let mut parts = line.split(' ');
         let num_colon = parts.nth(1).unwrap();
         let id = num_colon[..num_colon.len() - 1].parse::<u32>().unwrap();
@@ -239,7 +239,7 @@ pub fn day19() {
             (geode_cost1, geode_cost2),
         )
     });
-    while let Some(bp) = blueprints.next() {
+    for bp in blueprints {
         let ans = dfs::<24>(
             &bp,
             Node::new(

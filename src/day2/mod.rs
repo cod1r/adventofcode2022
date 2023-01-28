@@ -2,7 +2,7 @@ use std::fs;
 pub fn day2() {
     let input_read = fs::read_to_string("src/day2/input.txt");
     let input = input_read.unwrap();
-    let input_splt = input.trim().split("\n").collect::<Vec<_>>();
+    let input_splt = input.trim().split('\n').collect::<Vec<_>>();
     let first_part = input_splt.iter().fold(0, |acc, rnd| match rnd {
         &"A X" => acc + 4,
         &"B Y" => acc + 5,
@@ -13,7 +13,7 @@ pub fn day2() {
         &"B Z" => acc + 9,
         &"C X" => acc + 7,
         &"C Y" => acc + 2,
-        &_ => acc + 0,
+        &_ => acc,
     });
     let second_part = input_splt.iter().fold(0, |acc, rnd| match rnd {
         &"A X" => acc + 3,
@@ -25,9 +25,9 @@ pub fn day2() {
         &"B Z" => acc + 9,
         &"C X" => acc + 2,
         &"C Y" => acc + 6,
-        &_ => acc + 0,
+        &_ => acc,
     });
     println!("day2");
-    println!("{}", first_part);
-    println!("{}", second_part);
+    println!("{first_part}");
+    println!("{second_part}");
 }

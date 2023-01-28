@@ -2,16 +2,16 @@ use std::collections::HashSet;
 
 pub fn day15() {
     let input_str = include_str!("input.txt");
-    let mut sb = input_str.trim().lines().map(|line| {
+    let sb = input_str.trim().lines().map(|line| {
         let mut parts = line.split(' ');
         let sx_str = parts.nth(2).unwrap();
         let sx = sx_str[2..sx_str.len() - 1].parse::<i32>().unwrap();
-        let sy_str = parts.nth(0).unwrap();
+        let sy_str = parts.next().unwrap();
         let sy = sy_str[2..sy_str.len() - 1].parse::<i32>().unwrap();
 
         let bx_str = parts.nth(4).unwrap();
         let bx = bx_str[2..bx_str.len() - 1].parse::<i32>().unwrap();
-        let by_str = parts.nth(0).unwrap();
+        let by_str = parts.next().unwrap();
         let by = by_str[2..].parse::<i32>().unwrap();
         (sx, sy, bx, by)
     });
@@ -23,7 +23,7 @@ pub fn day15() {
         const ROW_NUM: i32 = 2_000_000;
         let mut part1 = (i32::MAX, i32::MIN);
         let mut b_on_row = HashSet::new();
-        while let Some(p) = sb.next() {
+        for p in sb {
             let man_dist = (p.0 - p.2).abs() + (p.1 - p.3).abs();
             if (ROW_NUM - p.1).abs() <= man_dist {
                 let diff = ((ROW_NUM - p.1).abs() - man_dist).abs();
@@ -48,7 +48,7 @@ pub fn day15() {
                 }
             }
             contig.sort_by(|a, b| a.0.cmp(&b.0));
-            let mut final_one = contig.first().unwrap().clone();
+            let mut final_one = *contig.first().unwrap();
             for p in &contig {
                 if final_one.0 - 1 <= p.1 && final_one.1 + 1 >= p.0 {
                     final_one.0 = final_one.0.min(p.0);

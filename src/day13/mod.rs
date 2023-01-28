@@ -26,7 +26,7 @@ fn build(signal_str: &mut Chars, mut w: Wrap, mut number: String) -> Wrap {
                     w.list.push(wrap);
                 }
                 ',' | ']' => {
-                    if number.len() > 0 {
+                    if !number.is_empty() {
                         let n = number.parse::<usize>().unwrap();
                         w.list.push(Wrap::new(Some(n), Vec::new()));
                         number.clear();
@@ -46,8 +46,8 @@ fn build(signal_str: &mut Chars, mut w: Wrap, mut number: String) -> Wrap {
 }
 fn traverse(w: Wrap) {
     match w.num {
-        Some(n) => {
-            assert!(w.list.len() == 0);
+        Some(_n) => {
+            assert!(w.list.is_empty());
         }
         None => {
             w.list.iter().for_each(|subw| traverse(subw.clone()));
@@ -99,11 +99,11 @@ fn compare(one: Wrap, two: Wrap) -> u8 {
 pub fn day13() {
     let input_str = include_str!("input.txt");
     let mut hs = HashSet::new();
-    let mut signals = input_str
+    let signals = input_str
         .trim()
         .split("\n\n")
         .map(|s| {
-            let mut split = s.split("\n");
+            let mut split = s.split('\n');
             let one = split.next().unwrap();
             let two = split.next().unwrap();
             hs.insert(one);
@@ -123,7 +123,7 @@ pub fn day13() {
             part1 += pair_idx + 1;
         }
     }
-    println!("part1: {}", part1);
+    println!("part1: {part1}");
 
     let mut singles = signals.iter().fold(Vec::new(), |mut acc, e| {
         acc.push(e.0);
@@ -155,5 +155,5 @@ pub fn day13() {
             part2 *= i + 1;
         }
     }
-    println!("part2: {}", part2);
+    println!("part2: {part2}");
 }

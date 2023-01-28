@@ -280,7 +280,7 @@ fn rotate<'a>(turn: &'static str, d: &'a str) -> &'static str {
 pub fn day22() {
     let input_str = include_str!("input.txt");
     let mut parts = input_str[..input_str.len() - 1].split("\n\n");
-    assert!(input_str.chars().last().unwrap() == '\n');
+    assert!(input_str.ends_with('\n'));
     let board = parts.next().unwrap().lines();
     let path = parts.next().unwrap();
     let mut instructions = Vec::new();
@@ -289,13 +289,13 @@ pub fn day22() {
         if c.is_ascii_digit() {
             str_buffer.push(*c as char);
         } else {
-            if str_buffer.len() > 0 {
+            if !str_buffer.is_empty() {
                 instructions.push(Instruction::Forward(str_buffer.parse::<usize>().unwrap()));
             }
             instructions.push(Instruction::Direction((*c as char).to_string()));
             str_buffer.clear();
         }
-        if i == path.as_bytes().len() - 1 && str_buffer.len() > 0 {
+        if i == path.as_bytes().len() - 1 && !str_buffer.is_empty() {
             instructions.push(Instruction::Forward(str_buffer.parse::<usize>().unwrap()));
         }
     }
@@ -360,7 +360,7 @@ pub fn day22() {
             Instruction::Forward(f) => match turn {
                 "R" => {
                     for _ in 0..f {
-                        if location.1 + 1 <= rows[location.0].1
+                        if location.1 < rows[location.0].1
                             && lines[location.0][location.1 + 1] == b'#'
                         {
                             break;
@@ -379,44 +379,40 @@ pub fn day22() {
                 "L" => {
                     for _ in 0..f {
                         if location.1 > 0
-                            && location.1 - 1 >= rows[location.0].0
+                            && location.1 > rows[location.0].0
                             && lines[location.0][location.1 - 1] == b'#'
                         {
                             break;
                         }
                         if location.1 > rows[location.0].0 {
                             location.1 -= 1;
+                        } else if lines[location.0][rows[location.0].1] == b'#' {
+                            break;
                         } else {
-                            if lines[location.0][rows[location.0].1] == b'#' {
-                                break;
-                            } else {
-                                location.1 = rows[location.0].1;
-                            }
+                            location.1 = rows[location.0].1;
                         }
                     }
                 }
                 "U" => {
                     for _ in 0..f {
                         if location.0 > 0
-                            && location.0 - 1 >= cols[location.1].0
+                            && location.0 > cols[location.1].0
                             && lines[location.0 - 1][location.1] == b'#'
                         {
                             break;
                         }
                         if location.0 > cols[location.1].0 {
                             location.0 -= 1;
+                        } else if lines[cols[location.1].1][location.1] == b'#' {
+                            break;
                         } else {
-                            if lines[cols[location.1].1][location.1] == b'#' {
-                                break;
-                            } else {
-                                location.0 = cols[location.1].1;
-                            }
+                            location.0 = cols[location.1].1;
                         }
                     }
                 }
                 "D" => {
                     for _ in 0..f {
-                        if location.0 + 1 <= cols[location.1].1
+                        if location.0 < cols[location.1].1
                             && lines[location.0 + 1][location.1] == b'#'
                         {
                             break;
@@ -593,7 +589,7 @@ pub fn day22() {
                 for _ in 0..f {
                     match turn {
                         "R" => {
-                            if location2.1 + 1 <= rows[location2.0].1
+                            if location2.1 < rows[location2.0].1
                                 && lines[location2.0][location2.1 + 1] == b'#'
                             {
                                 break;
@@ -630,7 +626,7 @@ pub fn day22() {
                         }
                         "L" => {
                             if location2.1 > 0
-                                && location2.1 - 1 >= rows[location2.0].0
+                                && location2.1 > rows[location2.0].0
                                 && lines[location2.0][location2.1 - 1] == b'#'
                             {
                                 break;
@@ -667,7 +663,7 @@ pub fn day22() {
                         }
                         "U" => {
                             if location2.0 > 0
-                                && location2.0 - 1 >= cols[location2.1].0
+                                && location2.0 > cols[location2.1].0
                                 && lines[location2.0 - 1][location2.1] == b'#'
                             {
                                 break;
@@ -703,7 +699,7 @@ pub fn day22() {
                             }
                         }
                         "D" => {
-                            if location2.0 + 1 <= cols[location2.1].1
+                            if location2.0 < cols[location2.1].1
                                 && lines[location2.0 + 1][location2.1] == b'#'
                             {
                                 break;

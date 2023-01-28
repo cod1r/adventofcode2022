@@ -22,7 +22,7 @@ pub fn day20() {
             }
         }
         let location = if numbers[i].1 < 0 {
-            let offset = (numbers[i].1 as i64).rem_euclid(moved.len() as i64);
+            let offset = numbers[i].1.rem_euclid(moved.len() as i64);
             (actual_ind + offset as usize) % (moved.len())
         } else {
             (actual_ind + numbers[i].1 as usize) % (moved.len())
@@ -55,7 +55,7 @@ pub fn day20() {
                 }
             }
             let location = if numbers2[i].1 < 0 {
-                let offset = (numbers2[i].1 as i64).rem_euclid(moved2.len() as i64);
+                let offset = numbers2[i].1.rem_euclid(moved2.len() as i64);
                 (actual_ind + offset as usize) % (moved2.len())
             } else {
                 (actual_ind + numbers2[i].1 as usize) % (moved2.len())

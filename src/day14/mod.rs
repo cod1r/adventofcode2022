@@ -11,7 +11,7 @@ pub fn day14() {
             )
         });
         let mut curr = coords.next().unwrap();
-        while let Some(next) = coords.next() {
+        for next in coords {
             max_row = max_row.max(curr.1);
             while curr.0 < next.0 {
                 cave[curr.1][curr.0] = '#';
@@ -33,7 +33,7 @@ pub fn day14() {
             curr = next;
         }
     });
-    let mut cave2 = cave.clone();
+    let mut cave2 = cave;
     let mut part1: usize = 0;
     loop {
         let mut sand = (500, 0);
@@ -61,7 +61,7 @@ pub fn day14() {
             break;
         }
     }
-    println!("part1: {}", part1);
+    println!("part1: {part1}");
     for col in 0..cave2[max_row + 2].len() {
         cave2[max_row + 2][col] = '#';
     }
@@ -95,5 +95,5 @@ pub fn day14() {
             break;
         }
     }
-    println!("part2: {}", part2);
+    println!("part2: {part2}");
 }

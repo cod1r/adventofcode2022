@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 
 // elves that want to move to the same location cannot move
 // for each elf, the first direction that they consider is moved to the back of the list of
@@ -65,111 +65,90 @@ impl Elf {
         self.d = None;
     }
     fn check_all(&self, loc_to_elf: &HashMap<String, Elf>) -> bool {
-        if let Some(_) = loc_to_elf
-            .get(&((self.location.0 - 1).to_string() + "," + &(self.location.1 - 1).to_string()))
+        if loc_to_elf
+            .get(&((self.location.0 - 1).to_string() + "," + &(self.location.1 - 1).to_string())).is_some()
         {
             true
-        } else if let Some(_) = loc_to_elf
-            .get(&((self.location.0 - 1).to_string() + "," + &self.location.1.to_string()))
+        } else if loc_to_elf
+            .get(&((self.location.0 - 1).to_string() + "," + &self.location.1.to_string())).is_some()
         {
             true
-        } else if let Some(_) = loc_to_elf
-            .get(&((self.location.0 - 1).to_string() + "," + &(self.location.1 + 1).to_string()))
+        } else if loc_to_elf
+            .get(&((self.location.0 - 1).to_string() + "," + &(self.location.1 + 1).to_string())).is_some()
         {
             true
-        } else if let Some(_) = loc_to_elf
-            .get(&(self.location.0.to_string() + "," + &(self.location.1 + 1).to_string()))
+        } else if loc_to_elf
+            .get(&(self.location.0.to_string() + "," + &(self.location.1 + 1).to_string())).is_some()
         {
             true
-        } else if let Some(_) = loc_to_elf
-            .get(&((self.location.0 + 1).to_string() + "," + &(self.location.1 + 1).to_string()))
+        } else if loc_to_elf
+            .get(&((self.location.0 + 1).to_string() + "," + &(self.location.1 + 1).to_string())).is_some()
         {
             true
-        } else if let Some(_) = loc_to_elf
-            .get(&((self.location.0 + 1).to_string() + "," + &self.location.1.to_string()))
+        } else if loc_to_elf
+            .get(&((self.location.0 + 1).to_string() + "," + &self.location.1.to_string())).is_some()
         {
             true
-        } else if let Some(_) = loc_to_elf
-            .get(&((self.location.0 + 1).to_string() + "," + &(self.location.1 - 1).to_string()))
+        } else if loc_to_elf
+            .get(&((self.location.0 + 1).to_string() + "," + &(self.location.1 - 1).to_string())).is_some()
         {
             true
-        } else if let Some(_) = loc_to_elf
-            .get(&(self.location.0.to_string() + "," + &(self.location.1 - 1).to_string()))
-        {
-            true
-        } else {
-            false
-        }
+        } else { loc_to_elf
+            .get(&(self.location.0.to_string() + "," + &(self.location.1 - 1).to_string())).is_some() }
     }
     fn check(&self, loc_to_elf: &HashMap<String, Elf>, dir: Dir) -> bool {
         match dir {
             Dir::North => {
-                if let Some(_) = loc_to_elf.get(
+                if loc_to_elf.get(
                     &((self.location.0 - 1).to_string() + "," + &(self.location.1 - 1).to_string()),
-                ) {
+                ).is_some() {
                     true
-                } else if let Some(_) = loc_to_elf
-                    .get(&((self.location.0 - 1).to_string() + "," + &self.location.1.to_string()))
+                } else if loc_to_elf
+                    .get(&((self.location.0 - 1).to_string() + "," + &self.location.1.to_string())).is_some()
                 {
                     true
-                } else if let Some(_) = loc_to_elf.get(
+                } else { loc_to_elf.get(
                     &((self.location.0 - 1).to_string() + "," + &(self.location.1 + 1).to_string()),
-                ) {
-                    true
-                } else {
-                    false
-                }
+                ).is_some() }
             }
             Dir::South => {
-                if let Some(_) = loc_to_elf.get(
+                if loc_to_elf.get(
                     &((self.location.0 + 1).to_string() + "," + &(self.location.1 + 1).to_string()),
-                ) {
+                ).is_some() {
                     true
-                } else if let Some(_) = loc_to_elf
-                    .get(&((self.location.0 + 1).to_string() + "," + &self.location.1.to_string()))
+                } else if loc_to_elf
+                    .get(&((self.location.0 + 1).to_string() + "," + &self.location.1.to_string())).is_some()
                 {
                     true
-                } else if let Some(_) = loc_to_elf.get(
+                } else { loc_to_elf.get(
                     &((self.location.0 + 1).to_string() + "," + &(self.location.1 - 1).to_string()),
-                ) {
-                    true
-                } else {
-                    false
-                }
+                ).is_some() }
             }
             Dir::West => {
-                if let Some(_) = loc_to_elf.get(
+                if loc_to_elf.get(
                     &((self.location.0 + 1).to_string() + "," + &(self.location.1 - 1).to_string()),
-                ) {
+                ).is_some() {
                     true
-                } else if let Some(_) = loc_to_elf
-                    .get(&(self.location.0.to_string() + "," + &(self.location.1 - 1).to_string()))
+                } else if loc_to_elf
+                    .get(&(self.location.0.to_string() + "," + &(self.location.1 - 1).to_string())).is_some()
                 {
                     true
-                } else if let Some(_) = loc_to_elf.get(
+                } else { loc_to_elf.get(
                     &((self.location.0 - 1).to_string() + "," + &(self.location.1 - 1).to_string()),
-                ) {
-                    true
-                } else {
-                    false
-                }
+                ).is_some() }
             }
             Dir::East => {
-                if let Some(_) = loc_to_elf.get(
+                if loc_to_elf.get(
                     &((self.location.0 - 1).to_string() + "," + &(self.location.1 + 1).to_string()),
-                ) {
+                ).is_some() {
                     true
-                } else if let Some(_) = loc_to_elf
-                    .get(&(self.location.0.to_string() + "," + &(self.location.1 + 1).to_string()))
+                } else if loc_to_elf
+                    .get(&(self.location.0.to_string() + "," + &(self.location.1 + 1).to_string())).is_some()
                 {
                     true
-                } else if let Some(_) = loc_to_elf.get(
+                } else { loc_to_elf.get(
                     &((self.location.0 + 1).to_string() + "," + &(self.location.1 + 1).to_string()),
-                ) {
-                    true
-                } else {
-                    false
-                }
+                ).is_some() }
             }
         }
     }
@@ -198,8 +177,8 @@ pub fn day23() {
         for elf in &mut elves {
             if elf.check_all(&loc_to_elf) {
                 isolated -= 1;
-                let mut order_cycle = order.iter();
-                while let Some(d) = order_cycle.next() {
+                let order_cycle = order.iter();
+                for d in order_cycle {
                     if !elf.check(&loc_to_elf, d.clone()) {
                         elf.d = Some(d.clone());
                         match d {

@@ -10,7 +10,7 @@ enum Rock {
 pub fn day17() {
     let input_str = include_str!("input.txt");
     let rocks = [Rock::Horiz, Rock::Plus, Rock::J, Rock::Vert, Rock::Block];
-    let mut char_iter = input_str.trim().chars().enumerate().cycle();
+    let char_iter = input_str.trim().chars().enumerate().cycle();
     let mut tops = HashSet::new();
     let mut top_most: (usize, usize) = (0, 0);
     let mut rock_iter = rocks.iter().cycle();
@@ -27,7 +27,7 @@ pub fn day17() {
     let mut heights = vec![0; SIZE];
     let mut index_of_instruction = vec![(1, '<'); SIZE];
     let mut prev = 0;
-    while let Some((i, c)) = char_iter.next() {
+    for (i, c) in char_iter {
         if num_rocks == SIZE {
             break;
         }
@@ -60,10 +60,8 @@ pub fn day17() {
             }
             _ => unreachable!(),
         }
-        if coords
-            .iter()
-            .find(|c| c.1 == 0 || tops.contains(&(c.0.to_string() + "|" + &(c.1 - 1).to_string())))
-            .is_none()
+        if !coords
+            .iter().any(|c| c.1 == 0 || tops.contains(&(c.0.to_string() + "|" + &(c.1 - 1).to_string())))
         {
             coords.iter_mut().for_each(|c| {
                 c.1 -= 1;
@@ -73,7 +71,7 @@ pub fn day17() {
                 if c.1 > top_most.1 {
                     top_most = *c;
                 }
-                let insert = String::from(c.0.to_string() + "|" + &c.1.to_string());
+                let insert = c.0.to_string() + "|" + &c.1.to_string();
                 tops.insert(insert);
             });
             top = top_most.1 + 4;

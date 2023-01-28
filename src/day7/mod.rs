@@ -6,7 +6,7 @@ pub fn day7() {
     let lines = input_str.trim().lines();
     let mut times: usize = 0;
     for line in lines {
-        let mut parts = line.split(" ");
+        let mut parts = line.split(' ');
         let first_part = parts.next().unwrap();
         if first_part == "$" {
             let second_part = parts.next().unwrap();
@@ -21,7 +21,7 @@ pub fn day7() {
                     stack.pop();
                 }
             }
-        } else if first_part.chars().nth(0).unwrap().is_ascii_digit() {
+        } else if first_part.chars().next().unwrap().is_ascii_digit() {
             let add = first_part.parse::<usize>().unwrap();
             for key in &stack {
                 let value = hash.get(key).unwrap();

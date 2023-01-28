@@ -1,13 +1,13 @@
 fn conv_to_dec(s: String) -> i128 {
-    s.trim().lines().fold(0 as i128, |acc, line| {
+    s.trim().lines().fold(0_i128, |acc, line| {
         let bytes = line.as_bytes();
         let mut ans = 0;
         for i in (0..bytes.len()).rev() {
             ans += match bytes[i] {
                 b'2' => 5_i128.pow((bytes.len() - 1 - i).try_into().unwrap()) * 2,
-                b'1' => 5_i128.pow((bytes.len() - 1 - i).try_into().unwrap()) * 1,
+                b'1' => 5_i128.pow((bytes.len() - 1 - i).try_into().unwrap()),
                 b'0' => 0_i128,
-                b'-' => 5_i128.pow((bytes.len() - 1 - i).try_into().unwrap()) * -1,
+                b'-' => -(5_i128.pow((bytes.len() - 1 - i).try_into().unwrap())),
                 b'=' => 5_i128.pow((bytes.len() - 1 - i).try_into().unwrap()) * -2,
                 _ => unreachable!(),
             }

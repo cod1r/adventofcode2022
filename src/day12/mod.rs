@@ -29,16 +29,12 @@ impl Ord for Node {
     }
 }
 fn check(current: u8, dest: u8) -> bool {
-    if (current >= dest || dest - current == 1) && dest != b'_' {
-        true
-    } else {
-        false
-    }
+    (current >= dest || dest - current == 1) && dest != b'_'
 }
 fn search(mut heightmap: Vec<Vec<u8>>, start: (usize, usize), end: (usize, usize)) -> usize {
     let mut heap = BinaryHeap::new();
     heap.push(Node::new(start.0, start.1, 0));
-    while heap.len() > 0 {
+    while !heap.is_empty() {
         let node = heap.pop().unwrap();
         let (row, col) = node.coord;
         if row == end.0 && col == end.1 {
@@ -65,8 +61,8 @@ pub fn day12() {
     let input_str = include_str!("input.txt");
     let mut heightmap = input_str
         .trim()
-        .split("\n")
-        .map(|s| s.as_bytes().iter().map(|c| *c).collect::<Vec<u8>>())
+        .split('\n')
+        .map(|s| s.as_bytes().to_vec())
         .collect::<Vec<Vec<u8>>>();
     let mut start = (0, 0);
     let mut end = (0, 0);
@@ -92,5 +88,5 @@ pub fn day12() {
             }
         }
     }
-    println!("part2: {}", part2);
+    println!("part2: {part2}");
 }

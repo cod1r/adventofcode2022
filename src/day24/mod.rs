@@ -118,7 +118,7 @@ fn calc(valley: &Vec<&[u8]>, blizz: &mut Vec<Blizzard>, you: Spot, target: (i32,
     let mut done = i32::MAX;
     let mut part2 = 0;
     let mut blizz_hashes = HashSet::new();
-    while q.len() > 0 {
+    while !q.is_empty() {
         for i in 0..blizz.len() {
             let b = &mut blizz[i];
             b.update(valley[0].len() as i32, valley.len() as i32);

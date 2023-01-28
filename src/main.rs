@@ -27,13 +27,13 @@ mod day7;
 mod day8;
 mod day9;
 fn set_up_day(aoc_cookie: &str, day: &str) -> Result<(), Box<dyn Error>> {
-    println!("setting up day {}...", day);
-    let url = format!("https://adventofcode.com/2022/day/{}/input", day);
-    let dir = format!("src/day{}", day);
+    println!("setting up day {day}...");
+    let url = format!("https://adventofcode.com/2022/day/{day}/input");
+    let dir = format!("src/day{day}");
     let client = reqwest::blocking::Client::new();
     let res = client
         .get(url)
-        .header("Cookie", format!("session={}", aoc_cookie))
+        .header("Cookie", format!("session={aoc_cookie}"))
         .send()?;
     if res.status().is_success() {
         let input = res.text()?;
@@ -45,9 +45,9 @@ fn set_up_day(aoc_cookie: &str, day: &str) -> Result<(), Box<dyn Error>> {
                 Err(_) => false,
             })
             .collect::<Vec<_>>();
-        if existing.len() == 0 {
+        if existing.is_empty() {
             fs::create_dir(dir.as_str())?;
-            fs::write(format!("{}/input.txt", dir), input)?;
+            fs::write(format!("{dir}/input.txt"), input)?;
             println!("done. don't forget to add the module and module function to main.rs");
         } else {
             println!("dir exists so you must remove");
@@ -65,14 +65,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         );
         return Ok(());
     }
-    let aoc_cookie: String;
-    match env::var("AOC_COOKIE") {
-        Ok(s) => aoc_cookie = s,
+    
+    let aoc_cookie: String = match env::var("AOC_COOKIE") {
+        Ok(s) => s,
         Err(e) => {
             println!("no AOC_COOKIE env var found");
             return Err(Box::new(e));
         }
-    }
+    };
     let day = args.nth(1).unwrap();
     match day.as_str() {
         "1" => day1::day1(),

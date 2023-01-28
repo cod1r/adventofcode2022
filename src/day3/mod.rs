@@ -6,8 +6,8 @@ pub fn day3() {
         Err(_) => println!("Err"),
     }
     let input_str = input_str_read.unwrap();
-    let input_str_splt = input_str.trim().split("\n").collect::<Vec<&str>>();
-    let first_part = input_str_splt.iter().fold(0 as usize, |acc, s| {
+    let input_str_splt = input_str.trim().split('\n').collect::<Vec<&str>>();
+    let first_part = input_str_splt.iter().fold(0_usize, |acc, s| {
         let len = s.len();
         let first = &s[0..len / 2].as_bytes();
         let second = &s[len / 2..].as_bytes();
@@ -15,16 +15,16 @@ pub fn day3() {
             .iter()
             .filter(|b| Some(b) == second.iter().find(|b2| b2 == b).as_ref())
             .collect::<Vec<&u8>>();
-        if common.len() > 0 {
+        if !common.is_empty() {
             if *common[0] >= 97 && *common[0] <= 122 {
                 acc + (*common[0] - 96) as usize
             } else if *common[0] >= 65 && *common[0] <= 90 {
                 acc + (*common[0] - 38) as usize
             } else {
-                acc + 0
+                acc
             }
         } else {
-            acc + 0
+            acc
         }
     });
     assert!(input_str_splt.len() == 300);
@@ -75,6 +75,6 @@ pub fn day3() {
         }
     }
     println!("day3");
-    println!("{}", first_part);
-    println!("{}", second_part);
+    println!("{first_part}");
+    println!("{second_part}");
 }

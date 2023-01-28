@@ -4,7 +4,7 @@ pub fn day1() {
     let spl = input_str.unwrap();
     let mut stuff: Vec<u64> = spl
         .split("\n\n")
-        .map(|s| s.split("\n").collect::<Vec<&str>>())
+        .map(|s| s.split('\n').collect::<Vec<&str>>())
         .map(|vs| {
             vs.into_iter()
                 .map(|sn| sn.parse::<u64>())
@@ -13,7 +13,7 @@ pub fn day1() {
         .map(|vn| {
             vn.into_iter().fold(0, |a, b| match b {
                 Ok(val) => a + val,
-                Err(_) => a + 0,
+                Err(_) => a,
             })
         })
         .collect();

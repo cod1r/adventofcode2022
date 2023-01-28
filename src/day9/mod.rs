@@ -71,7 +71,7 @@ pub fn day9() {
         .trim()
         .lines()
         .fold([MAP_SIZE as i32 / 2 - 1; 4], |mut acc, elem| {
-            let parts = elem.split_once(" ").unwrap();
+            let parts = elem.split_once(' ').unwrap();
             let move_num = parts.1.parse::<i32>().unwrap();
             match parts.0 {
                 "L" => {
@@ -152,7 +152,7 @@ pub fn day9() {
         .trim()
         .lines()
         .fold([MAP_SIZE as i32 / 2 - 1; 20], |mut acc, elem| {
-            let parts = elem.split_once(" ").unwrap();
+            let parts = elem.split_once(' ').unwrap();
             let move_num = parts.1.parse::<i32>().unwrap();
             match parts.0 {
                 "L" => {
