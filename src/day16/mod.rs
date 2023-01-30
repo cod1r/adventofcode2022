@@ -26,7 +26,7 @@ fn find_target_valve(
         return min;
     }
     let mut ans = usize::MAX;
-    for n in &valve_hm.get(curr).unwrap().neighbors {
+    for n in unsafe { &valve_hm.get(curr).unwrap_unchecked().neighbors } {
         if !visited.contains(n) {
             let mut new_visited = visited.clone();
             new_visited.insert(n);
@@ -41,11 +41,20 @@ fn get_mins_to_target(
     target: &'static str,
 ) -> usize {
     if mins_to_target_hm
-        .get(&(curr.to_string() + target)).is_none()
+        .get(&(curr.to_string() + target))
+        .is_none()
     {
-        *mins_to_target_hm.get(&(target.to_string() + curr)).unwrap()
+        unsafe {
+            *mins_to_target_hm
+                .get(&(target.to_string() + curr))
+                .unwrap_unchecked()
+        }
     } else {
-        *mins_to_target_hm.get(&(curr.to_string() + target)).unwrap()
+        unsafe {
+            *mins_to_target_hm
+                .get(&(curr.to_string() + target))
+                .unwrap_unchecked()
+        }
     }
 }
 fn brute_force_every(
@@ -59,16 +68,10 @@ fn brute_force_every(
 ) -> usize {
     let mut ans = pressure_total;
     for v in 0..valves_vec.len() {
-        if valves_vec[v].name != curr_v
-            && !openness.get(valves_vec[v].name).unwrap()
-            && valves_vec[v].rate > 0
-        {
+        if unsafe { !openness.get(valves_vec[v].name).unwrap_unchecked() } {
             let mins_to_target =
                 get_mins_to_target(minutes_to_target_hm, curr_v, valves_vec[v].name);
-            if mins_to_target < usize::MAX
-                && curr_min + mins_to_target + 1 < 30
-                && valves_vec[v].rate > 0
-            {
+            if mins_to_target < usize::MAX && curr_min + mins_to_target + 1 < 30 {
                 let pressure = (30 - (curr_min + mins_to_target + 1)) * valves_vec[v].rate;
                 openness.insert(valves_vec[v].name, true);
                 ans = ans.max(brute_force_every(
@@ -99,58 +102,76 @@ fn brute_force_every_part2(
 ) -> usize {
     let mut ans = pressure_total;
     for v in 0..valves_vec.len() {
-        if valves_vec[v].name != curr_v
-            && valves_vec[v].name != eleph_v
-            && !openness.get(valves_vec[v].name).unwrap()
-        {
-            let mins_to_target =
-                get_mins_to_target(minutes_to_target_hm, curr_v, valves_vec[v].name);
-            if mins_to_target < usize::MAX
-                && curr_min + mins_to_target + 1 < 26
-                && valves_vec[v].rate > 0
-            {
-                let pressure = (26 - (curr_min + mins_to_target + 1)) * valves_vec[v].rate;
-                openness.insert(valves_vec[v].name, true);
-                ans = ans.max(brute_force_every_part2(
-                    hm,
-                    valves_vec,
-                    curr_min + mins_to_target + 1,
-                    eleph_min,
-                    valves_vec[v].name,
-                    eleph_v,
-                    openness,
-                    minutes_to_target_hm,
-                    pressure_total + pressure,
-                ));
-                openness.insert(valves_vec[v].name, false);
-            }
-            let mins_to_target =
-                get_mins_to_target(minutes_to_target_hm, eleph_v, valves_vec[v].name);
-            if mins_to_target < usize::MAX
-                && eleph_min + mins_to_target + 1 < 26
-                && valves_vec[v].rate > 0
-            {
-                let pressure = (26 - (eleph_min + mins_to_target + 1)) * valves_vec[v].rate;
-                openness.insert(valves_vec[v].name, true);
-                ans = ans.max(brute_force_every_part2(
-                    hm,
-                    valves_vec,
-                    curr_min,
-                    eleph_min + mins_to_target + 1,
-                    curr_v,
-                    valves_vec[v].name,
-                    openness,
-                    minutes_to_target_hm,
-                    pressure_total + pressure,
-                ));
-                openness.insert(valves_vec[v].name, false);
+        if unsafe { !openness.get(valves_vec[v].name).unwrap_unchecked() } {
+            for v2 in 0..valves_vec.len() {
+                if unsafe { !openness.get(valves_vec[v2].name).unwrap_unchecked() }
+                    && valves_vec[v].name != valves_vec[v2].name
+                {
+                    let mins_to_target =
+                        get_mins_to_target(minutes_to_target_hm, curr_v, valves_vec[v].name);
+                    let mins_to_target2 =
+                        get_mins_to_target(minutes_to_target_hm, eleph_v, valves_vec[v2].name);
+                    if mins_to_target < usize::MAX
+                        && mins_to_target2 < usize::MAX
+                        && curr_min + mins_to_target + 1 < 26
+                        && eleph_min + mins_to_target2 + 1 < 26
+                    {
+                        let pressure = (26 - (curr_min + mins_to_target + 1)) * valves_vec[v].rate;
+                        let p2 = (26 - (eleph_min + mins_to_target2 + 1)) * valves_vec[v2].rate;
+                        openness.insert(valves_vec[v].name, true);
+                        openness.insert(valves_vec[v2].name, true);
+                        ans = ans.max(brute_force_every_part2(
+                            hm,
+                            valves_vec,
+                            curr_min + mins_to_target + 1,
+                            eleph_min + mins_to_target2 + 1,
+                            valves_vec[v].name,
+                            valves_vec[v2].name,
+                            openness,
+                            minutes_to_target_hm,
+                            pressure_total + pressure + p2,
+                        ));
+                        openness.insert(valves_vec[v].name, false);
+                        openness.insert(valves_vec[v2].name, false);
+                    } else if mins_to_target < usize::MAX && curr_min + mins_to_target + 1 < 26 {
+                        let pressure = (26 - (curr_min + mins_to_target + 1)) * valves_vec[v].rate;
+                        openness.insert(valves_vec[v].name, true);
+                        ans = ans.max(brute_force_every_part2(
+                            hm,
+                            valves_vec,
+                            curr_min + mins_to_target + 1,
+                            eleph_min,
+                            valves_vec[v].name,
+                            eleph_v,
+                            openness,
+                            minutes_to_target_hm,
+                            pressure_total + pressure,
+                        ));
+                        openness.insert(valves_vec[v].name, false);
+                    } else if mins_to_target2 < usize::MAX && eleph_min + mins_to_target2 + 1 < 26 {
+                        let p2 = (26 - (eleph_min + mins_to_target2 + 1)) * valves_vec[v2].rate;
+                        openness.insert(valves_vec[v2].name, true);
+                        ans = ans.max(brute_force_every_part2(
+                            hm,
+                            valves_vec,
+                            curr_min,
+                            eleph_min + mins_to_target2 + 1,
+                            curr_v,
+                            valves_vec[v2].name,
+                            openness,
+                            minutes_to_target_hm,
+                            pressure_total + p2,
+                        ));
+                        openness.insert(valves_vec[v2].name, false);
+                    }
+                }
             }
         }
     }
     ans
 }
 pub fn day16() {
-    let input_str = include_str!("input.txt");
+    let input_str = include_str!("example.txt");
     let mut hm = HashMap::new();
     let valves = input_str.trim().lines().map(|line| {
         let mut parts = line.split(' ');
@@ -199,7 +220,8 @@ pub fn day16() {
     }
     valves_vec = valves_vec
         .iter()
-        .filter(|v| v.rate > 0).cloned()
+        .filter(|v| v.rate > 0)
+        .cloned()
         .collect::<Vec<_>>();
     let start = std::time::Instant::now();
     let part1 = brute_force_every(&hm, &valves_vec, 0, "AA", &mut openness, &short_dist, 0);
